@@ -27,7 +27,7 @@ const line = {// desenha linha central
 
 const leftPaddle = {// desenha raquete esquerda
     x: gapX,
-    y: 250,
+    y: 0,
     w: line.w,
     h: 150,
     _move: function () {
@@ -43,11 +43,19 @@ const leftPaddle = {// desenha raquete esquerda
 
 const rightPaddle = {// desenha raquete direita
     x: field.w - line.w - gapX,
-    y: 250,
+    y: 0,
     w: line.w,
     h: 150,
+    speed: 3,
     _move: function () {
-        this.y = ball.y
+        if (this.y + this.h / 2 < ball.y + ball.r) {
+            this.y += this.speed
+        } else {
+            this.y -= this.speed
+        }
+    },
+    _speedUp: function () {
+        this.speed += 1
     },
     draw: function () {
         canvasContext.fillStyle = "#ffffff"
@@ -77,8 +85,8 @@ const score = {
 }
 
 const ball = {
-    x: 0,
-    y: 0,
+    x: field.w / 2,
+    y: field.h / 2,
     r: 20,
     speed: 10,
     directionX: 1,
@@ -124,10 +132,18 @@ const ball = {
         this.directionY = this.directionY * -1
     },
 
+    _speedUp: function () {
+        this.speed += 2
+    },
+
     _pointUp: function () {
+        this._speedUp()
+        rightPaddle._speedUp()
+        
         this.x = field.w / 2
         this.y = field.h / 2
     },
+
     _move: function () {//movimenta a bolinha
         this.x += this.directionX * this.speed
         this.y += this.directionY * this.speed
